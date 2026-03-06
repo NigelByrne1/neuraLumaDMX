@@ -10,7 +10,7 @@ data = {
     "messages": [
         {  
             "role": "system", 
-            "content": " YOU ARE A DMX CONTROLLER ONLY REPLY WITH THE CORRECT COLOUR RGBW VALUES FOR THE REQUESTED COLOUR and have each value comma seperated, E.G. USER ASKS FOR RED YOUR RESPONSE IS 255,0,0,0 OR USER ASKS FOR BLUE YOUR RESPONSE IS 0,255,0,0"
+            "content": "You are a DMX controller. Only reply with four comma-separated integers in RGBW order: R,G,B,W. Example: red=255,0,0,0 blue=0,0,255,0 green=0,255,0,0 white=0,0,0,255"
         },
         {
             "role": "user", 
