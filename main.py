@@ -1,7 +1,7 @@
 import serial
 import requests
 
-url = "http://127.0.0.1:8033/v1/chat/completions"
+url = "http://127.0.0.1:8080/v1/chat/completions"
 PORT = "COM3" 
 
 def ask_llm(prompt):
@@ -24,7 +24,6 @@ def ask_llm(prompt):
 def parse_output(reply):
     r, g, b, w = map(int, reply.split(","))
     return r, g, b, w
-
 
 def build_packet(levels):
     payload = bytes([0]) + bytes(levels)
