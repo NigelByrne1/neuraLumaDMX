@@ -1,0 +1,692 @@
+{
+  "$schema": "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/master/schemas/fixture.json",
+  "name": "LED Multi PAR",
+  "shortName": "CLMPAR3",
+  "categories": ["Color Changer", "Pixel Bar"],
+  "meta": {
+    "authors": ["NA"],
+    "createDate": "2026-03-24",
+    "lastModifyDate": "2026-03-24"
+  },
+  "comment": "Cameo CLMPAR3 manual",
+  "links": {
+    "manual": [
+      "https://www.cameolight.com/"
+    ],
+    "productPage": [
+      "https://www.cameolight.com/"
+    ]
+  },
+  "physical": {
+    "dimensions": [1030, 290, 100],
+    "weight": 9.7,
+    "power": 210,
+    "DMXconnector": "3-pin XLR",
+    "bulb": {
+      "type": "4 x 7x 8W RGBW LED"
+    },
+    "lens": {
+      "degreesMinMax": [25, 25]
+    }
+  },
+  "availableChannels": {
+    "Macro 1": {
+      "defaultValue": 0,
+      "capabilities": [
+        {
+          "dmxRange": [0, 17],
+          "type": "NoFunction",
+          "comment": "Blackout"
+        },
+        {
+          "dmxRange": [18, 33],
+          "type": "ColorPreset",
+          "comment": "Red",
+          "color": "Red"
+        },
+        {
+          "dmxRange": [34, 50],
+          "type": "ColorPreset",
+          "comment": "Green",
+          "color": "Green"
+        },
+        {
+          "dmxRange": [51, 67],
+          "type": "ColorPreset",
+          "comment": "Blue",
+          "color": "Blue"
+        },
+        {
+          "dmxRange": [68, 84],
+          "type": "ColorPreset",
+          "comment": "White",
+          "color": "White"
+        },
+        {
+          "dmxRange": [85, 101],
+          "type": "ColorPreset",
+          "comment": "Yellow"
+        },
+        {
+          "dmxRange": [102, 118],
+          "type": "ColorPreset",
+          "comment": "Bright cyan"
+        },
+        {
+          "dmxRange": [119, 135],
+          "type": "ColorPreset",
+          "comment": "Bright violet"
+        },
+        {
+          "dmxRange": [136, 152],
+          "type": "ColorPreset",
+          "comment": "Bright pink"
+        },
+        {
+          "dmxRange": [153, 169],
+          "type": "ColorPreset",
+          "comment": "Bright green"
+        },
+        {
+          "dmxRange": [170, 186],
+          "type": "ColorPreset",
+          "comment": "Magenta"
+        },
+        {
+          "dmxRange": [187, 203],
+          "type": "ColorPreset",
+          "comment": "Warm white"
+        },
+        {
+          "dmxRange": [204, 220],
+          "type": "ColorPreset",
+          "comment": "Cold white"
+        },
+        {
+          "dmxRange": [221, 237],
+          "type": "ColorPreset",
+          "comment": "Bright yellow"
+        },
+        {
+          "dmxRange": [238, 254],
+          "type": "ColorPreset",
+          "comment": "Bright magenta"
+        },
+        {
+          "dmxRange": [255, 255],
+          "type": "ColorPreset",
+          "comment": "White"
+        }
+      ]
+    },
+
+    "Macro 2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "Generic",
+        "comment": "Same as Macro 1"
+      }
+    },
+    "Macro 3": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "Generic",
+        "comment": "Same as Macro 1"
+      }
+    },
+    "Macro 4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "Generic",
+        "comment": "Same as Macro 1"
+      }
+    },
+
+    "Red": {
+      "defaultValue": 0,
+      "precedence": "HTP",
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Red",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Green": {
+      "defaultValue": 0,
+      "precedence": "HTP",
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Green",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Blue": {
+      "defaultValue": 0,
+      "precedence": "HTP",
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Blue",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "White": {
+      "defaultValue": 0,
+      "precedence": "HTP",
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "White",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+
+    "Master Dimmer": {
+      "defaultValue": 255,
+      "precedence": "HTP",
+      "capability": {
+        "type": "Intensity",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+
+    "Music / Strobe": {
+      "defaultValue": 0,
+      "capabilities": [
+        {
+          "dmxRange": [0, 0],
+          "type": "NoFunction",
+          "comment": "Use preset color from channels 1-4"
+        },
+        {
+          "dmxRange": [1, 128],
+          "type": "SoundSensitivity",
+          "soundSensitivityStart": "0%",
+          "soundSensitivityEnd": "100%"
+        },
+        {
+          "dmxRange": [129, 255],
+          "type": "ShutterStrobe",
+          "shutterEffect": "Strobe",
+          "speedStart": "slow",
+          "speedEnd": "fast"
+        }
+      ]
+    },
+
+    "Red 1+2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Red",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Green 1+2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Green",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Blue 1+2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Blue",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "White 1+2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "White",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Red 3+4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Red",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Green 3+4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Green",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Blue 3+4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Blue",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "White 3+4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "White",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+
+    "Red 1": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Red",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Green 1": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Green",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Blue 1": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Blue",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "White 1": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "White",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+
+    "Red 2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Red",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Green 2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Green",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Blue 2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Blue",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "White 2": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "White",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+
+    "Red 3": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Red",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Green 3": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Green",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Blue 3": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Blue",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "White 3": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "White",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+
+    "Red 4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Red",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Green 4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Green",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "Blue 4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "Blue",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+    "White 4": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "ColorIntensity",
+        "color": "White",
+        "brightnessStart": "0%",
+        "brightnessEnd": "100%"
+      }
+    },
+
+    "Program / Macro": {
+      "defaultValue": 0,
+      "capabilities": [
+        {
+          "dmxRange": [0, 15],
+          "type": "NoFunction",
+          "comment": "Manual RGBW color mixing on subsequent channels"
+        },
+        {
+          "dmxRange": [16, 23],
+          "type": "ColorPreset",
+          "comment": "Red"
+        },
+        {
+          "dmxRange": [24, 31],
+          "type": "ColorPreset",
+          "comment": "Green"
+        },
+        {
+          "dmxRange": [32, 39],
+          "type": "ColorPreset",
+          "comment": "Blue"
+        },
+        {
+          "dmxRange": [40, 47],
+          "type": "ColorPreset",
+          "comment": "White"
+        },
+        {
+          "dmxRange": [48, 55],
+          "type": "ColorPreset",
+          "comment": "RG"
+        },
+        {
+          "dmxRange": [56, 63],
+          "type": "ColorPreset",
+          "comment": "GB"
+        },
+        {
+          "dmxRange": [64, 71],
+          "type": "ColorPreset",
+          "comment": "BW"
+        },
+        {
+          "dmxRange": [72, 79],
+          "type": "ColorPreset",
+          "comment": "RW"
+        },
+        {
+          "dmxRange": [80, 87],
+          "type": "ColorPreset",
+          "comment": "GW"
+        },
+        {
+          "dmxRange": [88, 95],
+          "type": "ColorPreset",
+          "comment": "RB"
+        },
+        {
+          "dmxRange": [96, 103],
+          "type": "ColorPreset",
+          "comment": "RGB"
+        },
+        {
+          "dmxRange": [104, 111],
+          "type": "ColorPreset",
+          "comment": "GBW"
+        },
+        {
+          "dmxRange": [112, 119],
+          "type": "ColorPreset",
+          "comment": "RGW"
+        },
+        {
+          "dmxRange": [120, 127],
+          "type": "ColorPreset",
+          "comment": "RBW"
+        },
+        {
+          "dmxRange": [128, 135],
+          "type": "ColorPreset",
+          "comment": "RGBW"
+        },
+        {
+          "dmxRange": [136, 143],
+          "type": "Effect",
+          "effectName": "Dream"
+        },
+        {
+          "dmxRange": [144, 151],
+          "type": "Effect",
+          "effectName": "Meteor"
+        },
+        {
+          "dmxRange": [152, 159],
+          "type": "Effect",
+          "effectName": "Colour Fade"
+        },
+        {
+          "dmxRange": [160, 167],
+          "type": "Effect",
+          "effectName": "Colour Change"
+        },
+        {
+          "dmxRange": [168, 175],
+          "type": "Effect",
+          "effectName": "Flow 1"
+        },
+        {
+          "dmxRange": [176, 183],
+          "type": "Effect",
+          "effectName": "Flow 2"
+        },
+        {
+          "dmxRange": [184, 191],
+          "type": "Effect",
+          "effectName": "Flow 3"
+        },
+        {
+          "dmxRange": [192, 199],
+          "type": "Effect",
+          "effectName": "Flow 4"
+        },
+        {
+          "dmxRange": [200, 207],
+          "type": "Effect",
+          "effectName": "Flow 5"
+        },
+        {
+          "dmxRange": [208, 215],
+          "type": "Effect",
+          "effectName": "Flow 6"
+        },
+        {
+          "dmxRange": [216, 223],
+          "type": "Effect",
+          "effectName": "Flow 7"
+        },
+        {
+          "dmxRange": [224, 231],
+          "type": "Effect",
+          "effectName": "Flow 8"
+        },
+        {
+          "dmxRange": [232, 239],
+          "type": "Effect",
+          "effectName": "Flow 9"
+        },
+        {
+          "dmxRange": [240, 255],
+          "type": "SoundSensitivity",
+          "comment": "Sound control enabled; CH2 sets sensitivity"
+        }
+      ]
+    },
+
+    "Program Speed / Sound Sensitivity": {
+      "defaultValue": 0,
+      "capability": {
+        "type": "Generic",
+        "comment": "Program speed or sound sensitivity depending on Program / Macro"
+      }
+    },
+
+    "Strobe": {
+      "defaultValue": 0,
+      "capabilities": [
+        {
+          "dmxRange": [0, 0],
+          "type": "ShutterStrobe",
+          "shutterEffect": "Open"
+        },
+        {
+          "dmxRange": [1, 255],
+          "type": "ShutterStrobe",
+          "shutterEffect": "Strobe",
+          "speedStart": "slow",
+          "speedEnd": "fast"
+        }
+      ]
+    },
+
+    "Outlet 1": {
+      "defaultValue": 0,
+      "capabilities": [
+        {
+          "dmxRange": [0, 127],
+          "type": "NoFunction",
+          "comment": "Off"
+        },
+        {
+          "dmxRange": [128, 255],
+          "type": "Maintenance",
+          "comment": "On"
+        }
+      ]
+    },
+    "Outlet 2": {
+      "defaultValue": 0,
+      "capabilities": [
+        {
+          "dmxRange": [0, 127],
+          "type": "NoFunction",
+          "comment": "Off"
+        },
+        {
+          "dmxRange": [128, 255],
+          "type": "Maintenance",
+          "comment": "On"
+        }
+      ]
+    }
+  },
+
+  "modes": [
+    {
+      "name": "4-channel-1",
+      "shortName": "4ch-1",
+      "channels": ["Macro 1", "Macro 2", "Macro 3", "Macro 4"]
+    },
+    {
+      "name": "4-channel-2",
+      "shortName": "4ch-2",
+      "channels": ["Red", "Green", "Blue", "White"]
+    },
+    {
+      "name": "6-channel",
+      "shortName": "6ch",
+      "channels": ["Red", "Green", "Blue", "White", "Master Dimmer", "Music / Strobe"]
+    },
+    {
+      "name": "8-channel",
+      "shortName": "8ch",
+      "channels": ["Red 1+2", "Green 1+2", "Blue 1+2", "White 1+2", "Red 3+4", "Green 3+4", "Blue 3+4", "White 3+4"]
+    },
+    {
+      "name": "9-channel",
+      "shortName": "9ch",
+      "channels": ["Program / Macro", "Program Speed / Sound Sensitivity", "Strobe", "Red", "Green", "Blue", "White", "Outlet 1", "Outlet 2"]
+    },
+    {
+      "name": "16-channel",
+      "shortName": "16ch",
+      "channels": ["Red 1", "Green 1", "Blue 1", "White 1", "Red 2", "Green 2", "Blue 2", "White 2", "Red 3", "Green 3", "Blue 3", "White 3", "Red 4", "Green 4", "Blue 4", "White 4"]
+    },
+    {
+      "name": "21-channel",
+      "shortName": "21ch",
+      "channels": ["Program / Macro", "Program Speed / Sound Sensitivity", "Strobe", "Red 1", "Green 1", "Blue 1", "White 1", "Red 2", "Green 2", "Blue 2", "White 2", "Red 3", "Green 3", "Blue 3", "White 3", "Red 4", "Green 4", "Blue 4", "White 4", "Outlet 1", "Outlet 2"]
+    }
+  ]
+}
