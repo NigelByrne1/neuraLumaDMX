@@ -29,9 +29,17 @@ def ask_llm(user_prompt):
             }
         ]
     }
-    response = requests.post(llm_url, json=data)
-    reply = response.json()["choices"][0]["message"]["content"]
-    return reply
+    try:
+        response = requests.post(llm_url, json=data, timeout=5)
+        response.raise_for_status()
+        reply = response.json()["choices"][0]["message"]["content"]
+        return reply
+    except requests.exceptions.HTTPError as e:
+        print("HTTP error occurred trying to reach llama.cpp:", e)
+        return None
+    except requests.exceptions.RequestException as e:
+        print("A request error occurred trying to reach llama.cpp:", e)
+        return None
 
 def parse_output(reply):
     r, g, b, w = map(int, reply.split(","))
@@ -57,9 +65,16 @@ def send_dmx(r, g, b, w):
 def main(): 
     user_prompt = input("Enter colour command: ")
     reply = ask_llm(user_prompt)
+
+    if reply is None:
+        main()
+        return
+
     print("LLM reply:", reply)
+
     r, g, b, w = parse_output(reply)
     send_dmx(r, g, b, w,)
+
     main()
 
 main()
