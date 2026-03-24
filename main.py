@@ -1,18 +1,22 @@
 import serial
 import requests
 
-
+interface_port = "COM3"
+interface_baudrate = 57600
+ 
 llm_port = "8033"
-interface_port = "COM3" 
-baudrate = "57600"
-llm_system_prompt1 = """"
-                    You are a DMX controller.
-                    Only reply with four comma-separated integers in RGBW order: R,G,B,W.
-                    Example: red=255,0,0,0 blue=0,0,255,0 green=0,255,0,0 white=0,0,0,255
-                    """
 llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 
-def ask_llm(prompt):
+llm_system_prompt1 = """
+                    You are a DMX controller. Use the users prompt to interpret natural language and out put it to dmx commands
+                    Only reply with four comma-separated integers in order of channels:
+                    Each integer representing a dmx value from 0-255 and in order
+                    e.g. desired output values for dmx channel red 1 = 0, channel 2 green = 123, channel 3 blue = 222, channel 4 white = 12
+                    then you would only reply with 0,123,222,12
+                    """.strip()
+
+
+def ask_llm(user_prompt):
     data = {
         "messages": [
             {  
@@ -21,7 +25,7 @@ def ask_llm(prompt):
             },
             {
                 "role": "user", 
-                "content": prompt
+                "content": user_prompt
             }
         ]
     }
@@ -46,7 +50,7 @@ def send_dmx(r, g, b, w):
     dmx[2] = b  
     dmx[3] = w  
 
-    with serial.Serial(interface_port, 57600) as ser:
+    with serial.Serial(interface_port, interface_baudrate) as ser:
         packet = build_packet(dmx)
         ser.write(packet)
 
