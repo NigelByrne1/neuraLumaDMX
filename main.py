@@ -1,15 +1,23 @@
 import serial
 import requests
 
-url = "http://127.0.0.1:8080/v1/chat/completions"
-PORT = "COM3" 
+
+llm_port = "8033"
+interface_port = "COM3" 
+baudrate = "57600"
+llm_system_prompt1 = """"
+                    You are a DMX controller.
+                    Only reply with four comma-separated integers in RGBW order: R,G,B,W.
+                    Example: red=255,0,0,0 blue=0,0,255,0 green=0,255,0,0 white=0,0,0,255
+                    """
+llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 
 def ask_llm(prompt):
     data = {
         "messages": [
             {  
                 "role": "system", 
-                "content": "You are a DMX controller. Only reply with four comma-separated integers in RGBW order: R,G,B,W. Example: red=255,0,0,0 blue=0,0,255,0 green=0,255,0,0 white=0,0,0,255"
+                "content": llm_system_prompt1
             },
             {
                 "role": "user", 
@@ -17,7 +25,7 @@ def ask_llm(prompt):
             }
         ]
     }
-    response = requests.post(url, json=data)
+    response = requests.post(llm_url, json=data)
     reply = response.json()["choices"][0]["message"]["content"]
     return reply
 
@@ -38,7 +46,7 @@ def send_dmx(r, g, b, w):
     dmx[2] = b  
     dmx[3] = w  
 
-    with serial.Serial(PORT, 57600) as ser:
+    with serial.Serial(interface_port, 57600) as ser:
         packet = build_packet(dmx)
         ser.write(packet)
 
