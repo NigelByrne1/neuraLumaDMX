@@ -1,3 +1,4 @@
+import json
 import serial
 import requests
 
@@ -69,6 +70,42 @@ def ask_llm(user_prompt):
         print("A request error occurred trying to reach llama.cpp:", e)
         return None
 
+def parse_json_output(reply):
+    default_output = [(255, 160, 60, 255)] *4
+
+    try:
+        data = json.loads(reply)
+
+        if len(data) != 4:
+            print ("LLM Error: 4 fixture values required, using default")
+            return default_output
+        
+        result = []
+        i = 1
+
+        for f in data:
+            try:
+                r = int(f["r"])
+                g = int(f["g"])
+                b = int(f["b"])
+                w = int(f["w"])  
+            except:
+                print("Error with fixture no.", i, ": missing or invalid keys, using default")
+                return default_output
+
+            for value in (r, g, b, w):
+                if value < 0 or value > 255:
+                    print("Error with fixture no.", i, ": LLM output contains value out of range 0-255, using default")
+                    return default_output
+                
+            result.append((r,g,b,w))
+            i += 1   
+
+        return result
+  
+    except ValueError:
+        print("Error: incorrect JSON format from llama.cpp, using default ")
+        return default_output
 
 def parse_multi_output(reply):
     default_output = [(255, 160, 60, 255)] *4
@@ -190,11 +227,13 @@ def main():
 
         reply = ask_llm(user_prompt)
         print(reply)
+
         if reply is None:
             continue
 
         # r, g, b, w = parse_output(reply)
-        fixtures = parse_multi_output(reply)
+        # fixtures = parse_multi_output(reply)
+        fixtures = parse_json_output(reply)
 
         print(fixtures)
 
@@ -207,7 +246,7 @@ def main():
             i += 1
 
         send_dmx_universe(dmx)
-        ##send_dmx(r, g, b, w)
+        # send_dmx(r, g, b, w)
 
     
 if __name__ == "__main__":
