@@ -43,25 +43,27 @@ def ask_llm(user_prompt):
         return None
 
 def parse_output(reply):
+    default_output = (255, 160, 60, 255)
+
     try:
         parts = reply.split(",")
 
         if len(parts) != 4:
-            print("Error: LLM output must contain exactly 4 values")
-            return None
+            print("Error: LLM output must contain exactly 4 values, using default")
+            return default_output    
 
         r, g, b, w = map(int, parts)
 
         for value in (r, g, b, w):
             if value < 0 or value > 255:
-                print("Error: LLM output contains value out of range 0-255")
-                return None
+                print("Error: LLM output contains value out of range 0-255, using default")
+                return default_output
 
         return r, g, b, w
 
-    except ValueError as e:
-        print("Error: incorrect format from llama.cpp:", e)
-        return None
+    except ValueError:
+        print("Error: incorrect format from llama.cpp, using default ")
+        return default_output
 
 def build_packet(levels):
     payload = bytes([0]) + bytes(levels)
@@ -94,15 +96,10 @@ def main():
         main()
         return
 
-    print("LLM reply:", reply)
-
-    values = parse_output(reply)
-    if values is None:
-        main()
-        return
-
-    r, g, b, w = values
-    send_dmx(r, g, b, w,)
+    r, g, b, w = parse_output(reply)
+    
+    print("LLM REPLY:", f"{r},{g},{b},{w}")
+    send_dmx(r, g, b, w)
 
     main()
 
