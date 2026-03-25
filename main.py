@@ -14,36 +14,33 @@ llm_system_prompt1 = """
 
                     Each fixture has 4 channels: Red, Green, Blue, White (0-255).
 
-                    You must output exactly 4 fixtures.
+                    Only reply with JSON.
+                    Do not reply with any explanation or extra text.
 
                     Output format:
-                    r,g,b,w;r,g,b,w;r,g,b,w;r,g,b,w
+                    [
+                    {"r": 0, "g": 0, "b": 0, "w": 0},
+                    {"r": 0, "g": 0, "b": 0, "w": 0},
+                    {"r": 0, "g": 0, "b": 0, "w": 0},
+                    {"r": 0, "g": 0, "b": 0, "w": 0}
+                    ]
 
                     Rules:
-                    - Each group represents one fixture
-                    - Each value must be an integer between 0 and 255
-                    - Do not include any text, explanation, or labels
-                    - Only output the values
+                    - Output exactly 4 objects in the array
+                    - Each object must contain r, g, b, w
+                    - Each value must be an integer from 0 to 255
+                    - No markdown
+                    - No backticks
+                    - No labels
+                    - No explanation
 
-                    Lighting behaviour:
-                    - Distribute colours across fixtures if appropriate
-                    - If multiple colours are mentioned, assign them across fixtures
-                    - If a national flag is requested, map colours across fixtures in order
-                    - If a known lighting style is requested (e.g. police lights), alternate colours across fixtures
-
-                    Examples:
-
-                    red:
-                    255,0,0,0;255,0,0,0;255,0,0,0;255,0,0,0
-
-                    irish flag:
-                    0,255,0,0;0,255,0,0;0,0,0,255;255,165,0,0
-
-                    american police:
-                    255,0,0,0;0,0,255,0;255,0,0,0;0,0,255,0
-
-                    rainbow:
-                    255,0,0,0;255,127,0,0;0,255,0,0;0,0,255,0
+                    Example:
+                    [
+                    {"r":255,"g":0,"b":0,"w":0},
+                    {"r":0,"g":255,"b":0,"w":0},
+                    {"r":0,"g":0,"b":255,"w":0},
+                    {"r":0,"g":0,"b":0,"w":255}
+                    ]
                     """.strip()
 
 
@@ -187,12 +184,12 @@ def main():
         user_prompt = input("Enter colour command: ")
 
         if user_prompt.lower() == "exit":
-            print ("Exiting program..")
+            print ("Exiting program....")
             blackout()
             return
 
         reply = ask_llm(user_prompt)
-
+        print(reply)
         if reply is None:
             continue
 
