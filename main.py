@@ -87,6 +87,22 @@ def send_dmx(r, g, b, w):
     except serial.SerialTimeoutException as e:
         print ("Error: DMX write timeout: ", e)
 
+def send_dmx_universe (dmx):
+    try:
+        with serial.Serial(interface_port, interface_baudrate) as ser:
+            packet = build_packet(dmx)
+            ser.write(packet)
+    except serial.SerialException as e:
+        print ("Error: could not reach DMX interface: ", e)
+    except serial.SerialTimeoutException as e:
+        print ("Error: DMX write timeout: ", e)
+
+def set_rgbw_fixture(dmx, start_channel, r, g, b, w):
+    dmx[start_channel - 1] = r
+    dmx[start_channel] = g
+    dmx[start_channel + 1] = b
+    dmx[start_channel + 2] = w
+
 def blackout():
     dmx = [0] * 512
 
@@ -116,7 +132,15 @@ def main():
         r, g, b, w = parse_output(reply)
         
         print("LLM REPLY:", f"{r},{g},{b},{w}")
-        send_dmx(r, g, b, w)
+
+        dmx = [0] * 512
+        set_rgbw_fixture(dmx, 1, r, g, b, w)
+        set_rgbw_fixture(dmx, 5, r, g, b, w)
+        set_rgbw_fixture(dmx, 9, r, g, b, w)
+        set_rgbw_fixture(dmx, 13, r, g, b, w)
+        
+        send_dmx_universe(dmx)
+        ##send_dmx(r, g, b, w)
 
     
 if __name__ == "__main__":
