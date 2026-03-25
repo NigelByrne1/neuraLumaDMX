@@ -10,9 +10,10 @@ llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 llm_system_prompt1 = """
                     You are a DMX controller. Use the users prompt to interpret natural language and out put it to dmx commands
                     Only reply with four comma-separated integers in order of channels:
-                    Each integer representing a dmx value from 0-255 and in order
+                    Each integer representing a RGBW dmx value from 0-255 and in order
                     e.g. desired output values for dmx channel red 1 = 0, channel 2 green = 123, channel 3 blue = 222, channel 4 white = 12
                     then you would only reply with 0,123,222,12
+                    some examples of colours red = 255,0,0,0 white = 0,0,0,255 warm white 255,160,60,255
                     """.strip()
 
 
@@ -42,8 +43,25 @@ def ask_llm(user_prompt):
         return None
 
 def parse_output(reply):
-    r, g, b, w = map(int, reply.split(","))
-    return r, g, b, w
+    try:
+        parts = reply.split(",")
+
+        if len(parts) != 4:
+            print("Error: LLM output must contain exactly 4 values")
+            return None
+
+        r, g, b, w = map(int, parts)
+
+        for value in (r, g, b, w):
+            if value < 0 or value > 255:
+                print("Error: LLM output contains value out of range 0-255")
+                return None
+
+        return r, g, b, w
+
+    except ValueError as e:
+        print("Error: incorrect format from llama.cpp:", e)
+        return None
 
 def build_packet(levels):
     payload = bytes([0]) + bytes(levels)
@@ -78,7 +96,12 @@ def main():
 
     print("LLM reply:", reply)
 
-    r, g, b, w = parse_output(reply)
+    values = parse_output(reply)
+    if values is None:
+        main()
+        return
+
+    r, g, b, w = values
     send_dmx(r, g, b, w,)
 
     main()
