@@ -8,12 +8,42 @@ llm_port = "8033"
 llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 
 llm_system_prompt1 = """
-                    You are a DMX controller. Use the users prompt to interpret natural language and out put it to dmx commands
-                    Only reply with four comma-separated integers in order of channels:
-                    Each integer representing a RGBW dmx value from 0-255 and in order
-                    e.g. desired output values for dmx channel red 1 = 0, channel 2 green = 123, channel 3 blue = 222, channel 4 white = 12
-                    then you would only reply with 0,123,222,12
-                    some examples of colours red = 255,0,0,0 white = 0,0,0,255 warm white 255,160,60,255
+                    You are a DMX lighting controller.
+
+                    Interpret the user's natural language request and convert it into RGBW values for 4 lighting fixtures.
+
+                    Each fixture has 4 channels: Red, Green, Blue, White (0-255).
+
+                    You must output exactly 4 fixtures.
+
+                    Output format:
+                    r,g,b,w;r,g,b,w;r,g,b,w;r,g,b,w
+
+                    Rules:
+                    - Each group represents one fixture
+                    - Each value must be an integer between 0 and 255
+                    - Do not include any text, explanation, or labels
+                    - Only output the values
+
+                    Lighting behaviour:
+                    - Distribute colours across fixtures if appropriate
+                    - If multiple colours are mentioned, assign them across fixtures
+                    - If a national flag is requested, map colours across fixtures in order
+                    - If a known lighting style is requested (e.g. police lights), alternate colours across fixtures
+
+                    Examples:
+
+                    red:
+                    255,0,0,0;255,0,0,0;255,0,0,0;255,0,0,0
+
+                    irish flag:
+                    0,255,0,0;0,255,0,0;0,0,0,255;255,165,0,0
+
+                    american police:
+                    255,0,0,0;0,0,255,0;255,0,0,0;0,0,255,0
+
+                    rainbow:
+                    255,0,0,0;255,127,0,0;0,255,0,0;0,0,255,0
                     """.strip()
 
 
@@ -41,6 +71,43 @@ def ask_llm(user_prompt):
     except requests.exceptions.RequestException as e:
         print("A request error occurred trying to reach llama.cpp:", e)
         return None
+
+
+def parse_multi_output(reply):
+    default_output = [(255, 160, 60, 255)] *4
+
+    try:
+        fixtures = reply.split(";")
+
+        if len(fixtures) != 4:
+            print ("LLM Error: 4 fixture values required, using default")
+            return default_output
+        
+        result = []
+        i = 1
+
+        for f in fixtures:
+            parts = f.split(",")
+
+            if len(parts) != 4:
+                print("Error with fixture no.", i, ": LLM output must contain exactly 4 values, using default")
+                return default_output    
+
+            r, g, b, w = map(int, parts)
+
+            for value in (r, g, b, w):
+                if value < 0 or value > 255:
+                    print("Error with fixture no.", i, ": LLM output contains value out of range 0-255, using default")
+                    return default_output
+                
+            result.append((r,g,b,w))
+            i += 1   
+
+        return result
+  
+    except ValueError:
+        print("Error: incorrect format from llama.cpp, using default ")
+        return default_output
 
 def parse_output(reply):
     default_output = (255, 160, 60, 255)
@@ -129,16 +196,19 @@ def main():
         if reply is None:
             continue
 
-        r, g, b, w = parse_output(reply)
-        
-        print("LLM REPLY:", f"{r},{g},{b},{w}")
+        # r, g, b, w = parse_output(reply)
+        fixtures = parse_multi_output(reply)
+
+        print(fixtures)
 
         dmx = [0] * 512
-        set_rgbw_fixture(dmx, 1, r, g, b, w)
-        set_rgbw_fixture(dmx, 5, r, g, b, w)
-        set_rgbw_fixture(dmx, 9, r, g, b, w)
-        set_rgbw_fixture(dmx, 13, r, g, b, w)
-        
+        start_channels = [1, 5, 9, 13]
+
+        i = 0
+        for r, g, b, w in fixtures:
+            set_rgbw_fixture(dmx, start_channels[i], r, g, b, w)
+            i += 1
+
         send_dmx_universe(dmx)
         ##send_dmx(r, g, b, w)
 
