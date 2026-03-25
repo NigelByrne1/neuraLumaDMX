@@ -87,12 +87,24 @@ def send_dmx(r, g, b, w):
     except serial.SerialTimeoutException as e:
         print ("Error: DMX write timeout: ", e)
 
+def blackout():
+    dmx = [0] * 512
+
+    try:
+        with serial.Serial(interface_port, interface_baudrate) as ser:
+            packet = build_packet(dmx)
+            ser.write(packet)
+    except serial.SerialException as e:
+        print ("Error: could not send blackout:", e)
+    except serial.SerialTimeoutException as e:
+        print ("Error: could not send blackout:", e)
 
 def main():
     user_prompt = input("Enter colour command: ")
 
     if user_prompt.lower() == "exit":
         print ("Exiting program..")
+        blackout()
         return
 
     reply = ask_llm(user_prompt)
