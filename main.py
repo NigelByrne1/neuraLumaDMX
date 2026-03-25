@@ -100,25 +100,25 @@ def blackout():
         print ("Error: could not send blackout:", e)
 
 def main():
-    user_prompt = input("Enter colour command: ")
+    while True:
+        user_prompt = input("Enter colour command: ")
 
-    if user_prompt.lower() == "exit":
-        print ("Exiting program..")
-        blackout()
-        return
+        if user_prompt.lower() == "exit":
+            print ("Exiting program..")
+            blackout()
+            return
 
-    reply = ask_llm(user_prompt)
+        reply = ask_llm(user_prompt)
 
-    if reply is None:
-        main()
-        return
+        if reply is None:
+            continue
 
-    r, g, b, w = parse_output(reply)
+        r, g, b, w = parse_output(reply)
+        
+        print("LLM REPLY:", f"{r},{g},{b},{w}")
+        send_dmx(r, g, b, w)
+
     
-    print("LLM REPLY:", f"{r},{g},{b},{w}")
-    send_dmx(r, g, b, w)
-
+if __name__ == "__main__":
+    print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
     main()
-
-print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
-main()
