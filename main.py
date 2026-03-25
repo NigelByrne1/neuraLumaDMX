@@ -88,8 +88,13 @@ def send_dmx(r, g, b, w):
         print ("Error: DMX write timeout: ", e)
 
 
-def main(): 
+def main():
     user_prompt = input("Enter colour command: ")
+
+    if user_prompt.lower() == "exit":
+        print ("Exiting program..")
+        return
+
     reply = ask_llm(user_prompt)
 
     if reply is None:
@@ -103,4 +108,5 @@ def main():
 
     main()
 
+print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
 main()
