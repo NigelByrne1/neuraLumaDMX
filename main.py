@@ -237,6 +237,13 @@ def blackout():
 def colour_static(dmx):
     send_dmx_universe(dmx)
 
+def colour_strobe(dmx, delay):
+    while True:
+        send_dmx_universe(dmx)
+        time.sleep(delay)
+        blackout()
+        time.sleep(delay)
+
 def main():
     while True:
         user_prompt = input("Enter colour command: ")
@@ -272,7 +279,8 @@ def main():
             set_rgbw_fixture(dmx, start_channels[i], r, g, b, w)
             i += 1
 
-        colour_static(dmx)
+        colour_strobe(dmx, 0.1)
+        # colour_static(dmx)
 
 if __name__ == "__main__":
     print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
