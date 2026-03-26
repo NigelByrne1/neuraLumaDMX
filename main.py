@@ -9,48 +9,125 @@ llm_port = "8033"
 llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 
 llm_system_prompt1 = """
-                    You are a DMX lighting controller.
+You are a lighting designer.
 
-                    Interpret the user's natural language request and convert it into RGBW values for 4 lighting fixtures.
+The user will describe a mood, theme, event, flag, holiday, scene, or visual idea.
+Your job is to choose the best 4 colours for 4 lighting fixtures.
 
-                    Each fixture has 4 channels: Red, Green, Blue, White (0-255).
+Interpret the user's request creatively and output exactly 4 colour names in order, separated by commas.
 
-                    Only reply with JSON.
-                    Do not reply with any explanation or extra text.
+The 4 colours should form a sensible lighting palette across 4 fixtures.
+You may repeat colours if that makes sense for the theme.
+The 4 fixtures are lined up in a straight line so it might make sense to pattern the colours rather than have 4 unique colours, example colour 1, colour 2, colour 1, colour 2. this is not always the case though please decide what the best approach is depending on the users request. 
+If using a pattern like just mentioned make sure to pattern the 2 most significant colours that match the users request
 
-                    Output format:
-                    [
-                    {"r": 0, "g": 0, "b": 0, "w": 0},
-                    {"r": 0, "g": 0, "b": 0, "w": 0},
-                    {"r": 0, "g": 0, "b": 0, "w": 0},
-                    {"r": 0, "g": 0, "b": 0, "w": 0}
-                    ]
+Rules:
+- Output exactly 4 colour names
+- Separate them with commas
+- Do not explain anything
+- Do not output RGB or JSON
+- Only output the 4 colour names
 
-                    Rules:
-                    - Output exactly 4 objects in the array
-                    - Each object must contain r, g, b, w
-                    - Each value must be an integer from 0 to 255
-                    - No markdown
-                    - No backticks
-                    - No labels
-                    - No explanation
+Guidance:
+- For moods like calm, peaceful, cold, or ocean, choose soft cool colours such as blue, cyan, teal, aqua, or soft green
+- For holidays or themes like christmas, choose an appropriate repeated palette such as red, green, red, green
+- For flags or national colours, choose colours that best represent the flag or theme across 4 fixtures
+- For requests like St Patrick's Day or Irish colours, prefer green, white, orange, green
+- For requests like Thailand flag, prefer red, white, blue, red
+- For police lights, alternate red and blue
+- For sunset or warm moods, choose warm colours such as amber, orange, pink, and warm white
+- Sometimes the user will just say one colour eg blue, output would be blue,blue,blue,blue it does not always have to be a pallete but it should always be accurate
+- If the request is unclear, choose a sensible palette that best matches the theme
 
-                    Example:
-                    [
-                    {"r":255,"g":0,"b":0,"w":0},
-                    {"r":0,"g":255,"b":0,"w":0},
-                    {"r":0,"g":0,"b":255,"w":0},
-                    {"r":0,"g":0,"b":0,"w":255}
-                    ]
-                    """.strip()
+Examples:
+
+blue:
+
+calm colours
+blue, cyan, teal, soft green
+
+irish flag
+green, white, orange, green
+
+St Patrick's Day
+green, white, orange, green
+
+thailand flag
+red, white, blue, red
+
+christmas colours
+red, green, red, green
+
+american police
+red, blue, red, blue
+
+sunset
+orange, amber, pink, warm white
+""".strip()
 
 
-def ask_llm(user_prompt):
+llm_system_prompt2 = """
+You are a DMX lighting controller.
+
+Convert colour names into RGBW values.
+
+Output JSON only.
+
+Format:
+[
+  {"r":0,"g":0,"b":0,"w":0},
+  {"r":0,"g":0,"b":0,"w":0},
+  {"r":0,"g":0,"b":0,"w":0},
+  {"r":0,"g":0,"b":0,"w":0}
+]
+
+Each value must be 0-255.
+
+Do not include explanation.
+
+Example input:
+red, green, blue, white
+
+Example output:
+[
+  {"r":255,"g":0,"b":0,"w":0},
+  {"r":0,"g":255,"b":0,"w":0},
+  {"r":0,"g":0,"b":255,"w":0},
+  {"r":0,"g":0,"b":0,"w":255}
+]
+""".strip()
+
+def ask_llm_1(user_prompt):
+    data = {
+        "messages": [
+            {
+                "role": "system",
+                "content": llm_system_prompt1
+            },
+            {
+                "role": "user",
+                "content": user_prompt
+            }
+        ]
+    }
+    try:
+        response = requests.post(llm_url, json=data, timeout=5)
+        response.raise_for_status()
+        reply = response.json()["choices"][0]["message"]["content"]
+        return reply
+    except requests.exceptions.HTTPError as e:
+        print("HTTP error occurred trying to reach llama.cpp:", e)
+        return None
+    except requests.exceptions.RequestException as e:
+        print("A request error occurred trying to reach llama.cpp:", e)
+        return None
+
+def ask_llm_2(user_prompt):
     data = {
         "messages": [
             {  
                 "role": "system", 
-                "content": llm_system_prompt1
+                "content": llm_system_prompt2
             },
             {
                 "role": "user", 
@@ -225,15 +302,21 @@ def main():
             blackout()
             return
 
-        reply = ask_llm(user_prompt)
-        print(reply)
+        colour_reply = ask_llm_1(user_prompt)
+        print("Colour reply:", colour_reply)
 
-        if reply is None:
+        if colour_reply is None:
+            continue
+
+        json_reply = ask_llm_2(colour_reply)
+        print("JSON reply:", json_reply)
+
+        if json_reply is None:
             continue
 
         # r, g, b, w = parse_output(reply)
         # fixtures = parse_multi_output(reply)
-        fixtures = parse_json_output(reply)
+        fixtures = parse_json_output(json_reply)
 
         print(fixtures)
 
