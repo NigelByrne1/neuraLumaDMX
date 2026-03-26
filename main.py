@@ -186,43 +186,7 @@ def parse_json_output(reply):
         print("Error: incorrect JSON format from llama.cpp, using default ")
         return default_output
 
-def parse_multi_output(reply):
-    default_output = [(255, 160, 60, 255)] *4
 
-    try:
-        fixtures = reply.split(";")
-
-        if len(fixtures) != 4:
-            print ("LLM Error: 4 fixture values required, using default")
-            return default_output
-        
-        result = []
-        i = 1
-
-        for f in fixtures:
-            parts = f.split(",")
-
-            if len(parts) != 4:
-                print("Error with fixture no.", i, ": LLM output must contain exactly 4 values, using default")
-                return default_output    
-
-            r, g, b, w = map(int, parts)
-
-            for value in (r, g, b, w):
-                if value < 0 or value > 255:
-                    print("Error with fixture no.", i, ": LLM output contains value out of range 0-255, using default")
-                    return default_output
-                
-            result.append((r,g,b,w))
-            i += 1   
-
-        return result
-  
-    except ValueError:
-        print("Error: incorrect format from llama.cpp, using default ")
-        return default_output
-
-def parse_output(reply):
     default_output = (255, 160, 60, 255)
 
     try:
@@ -249,23 +213,6 @@ def build_packet(levels):
     payload = bytes([0]) + bytes(levels)
     length = len(payload)
     return bytes([0x7E,0x06,length & 0xFF,(length >> 8) & 0xFF]) + payload + bytes([0xE7])
-
-def send_dmx(r, g, b, w):
-    dmx = [0] * 512
-
-    dmx[0] = r  
-    dmx[1] = g 
-    dmx[2] = b  
-    dmx[3] = w  
-
-    try:
-        with serial.Serial(interface_port, interface_baudrate) as ser:
-            packet = build_packet(dmx)
-            ser.write(packet)
-    except serial.SerialException as e:
-        print ("Error: could not reach DMX interface: ", e)
-    except serial.SerialTimeoutException as e:
-        print ("Error: DMX write timeout: ", e)
 
 def send_dmx_universe (dmx):
     try:
@@ -316,8 +263,6 @@ def main():
         if json_reply is None:
             continue
 
-        # r, g, b, w = parse_output(reply)
-        # fixtures = parse_multi_output(reply)
         fixtures = parse_json_output(json_reply)
 
         print(fixtures)
@@ -331,7 +276,6 @@ def main():
             i += 1
 
         send_dmx_universe(dmx)
-        # send_dmx(r, g, b, w)
 
     
 if __name__ == "__main__":
