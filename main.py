@@ -1,5 +1,6 @@
 import json
 import serial
+import time
 import requests
 
 interface_port = "COM3"
@@ -42,6 +43,7 @@ Guidance:
 Examples:
 
 blue:
+blue, blue, blue, blue
 
 calm colours
 blue, cyan, teal, soft green
