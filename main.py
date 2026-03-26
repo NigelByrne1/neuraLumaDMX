@@ -272,6 +272,7 @@ def main():
             continue
 
         colour_reply = parse_colour_names(colour_reply)
+        print("Colour reply:", colour_reply)
         
         json_reply = ask_llm_2(colour_reply)
         print("JSON reply:", json_reply)
