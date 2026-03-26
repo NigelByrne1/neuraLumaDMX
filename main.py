@@ -234,6 +234,9 @@ def blackout():
     except serial.SerialTimeoutException as e:
         print ("Error: could not send blackout:", e)
 
+def colour_static(dmx):
+    send_dmx_universe(dmx)
+
 def main():
     while True:
         user_prompt = input("Enter colour command: ")
@@ -269,7 +272,7 @@ def main():
             set_rgbw_fixture(dmx, start_channels[i], r, g, b, w)
             i += 1
 
-        send_dmx_universe(dmx)
+        colour_static(dmx)
 
 if __name__ == "__main__":
     print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
