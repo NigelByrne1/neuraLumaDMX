@@ -209,6 +209,21 @@ def parse_json_output(reply):
         print("Error: incorrect format from llama.cpp, using default ")
         return default_output
 
+def parse_colour_names(reply):
+    default_output = "warm white, black, warm white, black"
+
+    colour_names = reply.split(",")
+
+    if len(colour_names) != 4:
+        print("Error: 4 colour names required, using default")
+        return default_output
+
+    cleaned = []
+    for colour in colour_names:
+        cleaned.append(colour.strip())
+
+    return ",".join(cleaned)
+
 def build_packet(levels):
     payload = bytes([0]) + bytes(levels)
     length = len(payload)
@@ -252,11 +267,12 @@ def main():
             return
 
         colour_reply = ask_llm_1(user_prompt)
-        print("Colour reply:", colour_reply)
 
         if colour_reply is None:
             continue
 
+        colour_reply = parse_colour_names(colour_reply)
+        
         json_reply = ask_llm_2(colour_reply)
         print("JSON reply:", json_reply)
 
@@ -277,7 +293,6 @@ def main():
 
         send_dmx_universe(dmx)
 
-    
 if __name__ == "__main__":
     print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
     main()
