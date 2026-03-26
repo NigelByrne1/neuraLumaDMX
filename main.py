@@ -186,29 +186,6 @@ def parse_json_output(reply):
         print("Error: incorrect JSON format from llama.cpp, using default ")
         return default_output
 
-
-    default_output = (255, 160, 60, 255)
-
-    try:
-        parts = reply.split(",")
-
-        if len(parts) != 4:
-            print("Error: LLM output must contain exactly 4 values, using default")
-            return default_output    
-
-        r, g, b, w = map(int, parts)
-
-        for value in (r, g, b, w):
-            if value < 0 or value > 255:
-                print("Error: LLM output contains value out of range 0-255, using default")
-                return default_output
-
-        return r, g, b, w
-
-    except ValueError:
-        print("Error: incorrect format from llama.cpp, using default ")
-        return default_output
-
 def parse_colour_names(reply):
     default_output = "warm white, black, warm white, black"
 
