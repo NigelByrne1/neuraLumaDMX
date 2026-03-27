@@ -247,6 +247,13 @@ def blackout():
     except serial.SerialTimeoutException as e:
         print ("Error: could not send blackout:", e)
 
+def check_for_exit_key():
+    if msvcrt.kbhit():
+        msvcrt.getch()
+        blackout()
+        return True
+    return False
+
 def colour_static(fixtures):
     dmx = build_dmx_from_fixtures(fixtures)
     send_dmx_universe(dmx)
@@ -256,17 +263,13 @@ def colour_strobe(fixtures, delay):
     print("Strobe running. Press any key to stop.")
 
     while True:
-        if msvcrt.kbhit():
-            msvcrt.getch()
-            blackout()
+        if check_for_exit_key():
             break
 
         send_dmx_universe(dmx)
         time.sleep(delay)
 
-        if msvcrt.kbhit():
-            msvcrt.getch()
-            blackout()
+        if check_for_exit_key():
             break
 
         blackout()
@@ -275,17 +278,13 @@ def colour_strobe(fixtures, delay):
 def colour_chase_flash(fixtures, delay):
     print("Chase running. Press any key to stop.")
 
-    while True:
+    while True:     
+        if check_for_exit_key():
+            break
+
         dmx = build_dmx_from_fixtures(fixtures)
-
-        if msvcrt.kbhit():
-                    msvcrt.getch()
-                    blackout()
-                    break
-
         send_dmx_universe(dmx)
         time.sleep(delay)
-
 
         first = fixtures[0]
         rest = fixtures[1:]
@@ -309,14 +308,14 @@ def main():
         print("Colour reply:", colour_reply)
         
         json_reply = ask_llm_2(colour_reply)
-        print("JSON reply:", json_reply)
+        # print("JSON reply:", json_reply)
 
         if json_reply is None:
             continue
 
         fixtures = parse_json_output(json_reply)
 
-        print(fixtures)
+        # print(fixtures)
 
         colour_chase_flash(fixtures, 0.3)
         #colour_strobe(fixtures, 0.1)
