@@ -72,7 +72,6 @@ sunset
 orange, amber, pink, warm white
 """.strip()
 
-
 llm_system_prompt_json = """
 You are a DMX lighting controller.
 
@@ -102,6 +101,64 @@ Example output:
   {"r":0,"g":0,"b":255,"w":0},
   {"r":0,"g":0,"b":0,"w":255}
 ]
+""".strip()
+
+llm_system_prompt_mode = """
+You are a lighting mode selector.
+
+Think about how the lighting should feel:
+
+- Calm, peaceful, relaxing → slow, static or gentle movement
+- Energetic, chaotic, party, rave → fast, chase or strobe
+- Rhythmic or alternating themes (e.g. police, flags) → chase
+- Simple or single-colour requests → static
+- Dramatic or intense scenes → faster speeds and dynamic modes
+
+Use your judgement to match the lighting behaviour to the user's intent, not just keywords.
+
+Think about how the lighting should feel:
+
+- Calm, peaceful, relaxing  slow, static or gentle movement
+- Energetic, chaotic, party, rave  fast, chase or strobe
+- Rhythmic or alternating themes (e.g. police, flags)  chase
+- Simple or single-colour requests  static
+- Dramatic or intense scenes  faster speeds and dynamic modes
+
+Use your judgement to match the lighting behaviour to the user's intent, not just keywords.
+
+Output exactly two comma-separated words in this format:
+mode,speed
+
+Allowed mode values:
+static
+strobe
+chase
+
+Allowed speed values:
+slow
+medium
+fast
+
+Rules:
+- Output only the two values
+- No explanation
+- No extra text
+
+Examples:
+crazy strobe
+strobe,fast
+
+calming countryside
+static,slow
+
+american police lights
+chase,medium
+
+just output red
+static,medium
+
+rave
+chase,fast
 """.strip()
 
 def ask_llm_colour_names(user_prompt):
@@ -138,6 +195,31 @@ def ask_llm_json(user_prompt):
             },
             {
                 "role": "user", 
+                "content": user_prompt
+            }
+        ]
+    }
+    try:
+        response = requests.post(llm_url, json=data, timeout=5)
+        response.raise_for_status()
+        reply = response.json()["choices"][0]["message"]["content"]
+        return reply
+    except requests.exceptions.HTTPError as e:
+        print("HTTP error occurred trying to reach llama.cpp:", e)
+        return None
+    except requests.exceptions.RequestException as e:
+        print("A request error occurred trying to reach llama.cpp:", e)
+        return None
+
+def ask_llm_mode_speed(user_prompt):
+    data = {
+        "messages": [
+            {
+                "role": "system",
+                "content": llm_system_prompt_mode
+            },
+            {
+                "role": "user",
                 "content": user_prompt
             }
         ]
@@ -205,6 +287,34 @@ def parse_colour_names(reply):
         cleaned.append(colour.strip())
 
     return ",".join(cleaned)
+
+def parse_mode_speed(reply):
+    default_mode = "static"
+    default_speed = "medium"
+
+    try:
+        parts = reply.split(",")
+
+        if len(parts) != 2:
+            print("Error: mode/speed output invalid, using defaults")
+            return default_mode, default_speed
+
+        mode = parts[0].strip().lower()
+        speed = parts[1].strip().lower()
+
+        if mode not in ["static", "strobe", "chase"]:
+            print("Error: invalid mode, using default")
+            mode = default_mode
+
+        if speed not in ["slow", "medium", "fast"]:
+            print("Error: invalid speed, using default")
+            speed = default_speed
+
+        return mode, speed
+
+    except:
+        print("Error: invalid mode/speed format, using defaults")
+        return default_mode, default_speed
 
 def build_packet(levels):
     payload = bytes([0]) + bytes(levels)
@@ -333,11 +443,19 @@ def main():
         
         json_reply = ask_llm_json(colour_reply)
         # print("JSON reply:", json_reply)
-
         if json_reply is None:
             continue
-
         fixtures = parse_json_output(json_reply)
+
+        mode_speed_reply = ask_llm_mode_speed(user_prompt)
+        if mode_speed_reply is None:
+            mode = "static"
+            speed = "medium"
+        else:
+            mode, speed = parse_mode_speed(mode_speed_reply)        
+
+        print("Mode:", mode)
+        print("Speed:", speed)
 
         # print(fixtures)
         delay = speed_to_delay(speed)
