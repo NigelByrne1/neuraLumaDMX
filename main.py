@@ -1,4 +1,5 @@
 import json
+import msvcrt
 import serial
 import time
 import requests
@@ -238,9 +239,22 @@ def colour_static(dmx):
     send_dmx_universe(dmx)
 
 def colour_strobe(dmx, delay):
+    print("Strobe running. Press any key to stop.")
+
     while True:
+        if msvcrt.kbhit():
+            msvcrt.getch()
+            blackout()
+            break
+
         send_dmx_universe(dmx)
         time.sleep(delay)
+
+        if msvcrt.kbhit():
+            msvcrt.getch()
+            blackout()
+            break
+
         blackout()
         time.sleep(delay)
 
@@ -280,7 +294,7 @@ def main():
             i += 1
 
         colour_strobe(dmx, 0.1)
-        # colour_static(dmx)
+        #colour_static(dmx)
 
 if __name__ == "__main__":
     print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
