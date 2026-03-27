@@ -12,9 +12,9 @@ llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 
 fixture_start_channels = [1, 5, 9, 13]
 mode = "chase"
-speed = "medium"
+speed = "fast"
 
-llm_system_prompt1 = """
+llm_system_prompt_colour_names = """
 You are a lighting designer.
 
 The user will describe a mood, theme, event, flag, holiday, scene, or visual idea.
@@ -73,7 +73,7 @@ orange, amber, pink, warm white
 """.strip()
 
 
-llm_system_prompt2 = """
+llm_system_prompt_json = """
 You are a DMX lighting controller.
 
 Convert colour names into RGBW values.
@@ -104,12 +104,12 @@ Example output:
 ]
 """.strip()
 
-def ask_llm_1(user_prompt):
+def ask_llm_colour_names(user_prompt):
     data = {
         "messages": [
             {
                 "role": "system",
-                "content": llm_system_prompt1
+                "content": llm_system_prompt_colour_names
             },
             {
                 "role": "user",
@@ -129,12 +129,12 @@ def ask_llm_1(user_prompt):
         print("A request error occurred trying to reach llama.cpp:", e)
         return None
 
-def ask_llm_2(user_prompt):
+def ask_llm_json(user_prompt):
     data = {
         "messages": [
             {  
                 "role": "system", 
-                "content": llm_system_prompt2
+                "content": llm_system_prompt_json
             },
             {
                 "role": "user", 
@@ -323,7 +323,7 @@ def main():
             blackout()
             return
 
-        colour_reply = ask_llm_1(user_prompt)
+        colour_reply = ask_llm_colour_names(user_prompt)
 
         if colour_reply is None:
             continue
@@ -331,7 +331,7 @@ def main():
         colour_reply = parse_colour_names(colour_reply)
         print("Colour reply:", colour_reply)
         
-        json_reply = ask_llm_2(colour_reply)
+        json_reply = ask_llm_json(colour_reply)
         # print("JSON reply:", json_reply)
 
         if json_reply is None:
