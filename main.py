@@ -255,7 +255,7 @@ def check_for_exit_key():
         return True
     return False
 
-def colour_static(fixtures):
+def colour_static(fixtures, delay=None):
     dmx = build_dmx_from_fixtures(fixtures)
     send_dmx_universe(dmx)
 
@@ -291,16 +291,16 @@ def colour_chase(fixtures, delay):
         rest = fixtures[1:]
         fixtures = rest + [first]
 
-def mode_choice(mode, fixtures):
+def mode_choice(mode, fixtures, delay):
     if mode == "static":
-        colour_static(fixtures)
+        colour_static(fixtures, delay)
     elif mode == "strobe":
-        colour_strobe(fixtures, 0.1)
+        colour_strobe(fixtures, delay)
     elif mode == "chase":
-        colour_chase(fixtures, 0.3)
+        colour_chase(fixtures, delay)
     else:
         print("Invalid mode, using static")
-        colour_static(fixtures)
+        colour_static(fixtures, delay)
     
 
 def main():
