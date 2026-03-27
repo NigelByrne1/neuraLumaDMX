@@ -258,6 +258,22 @@ def colour_strobe(dmx, delay):
         blackout()
         time.sleep(delay)
 
+def colour_chase_flash(fixtures, start_channels, delay):
+    while True:
+        dmx = [0] * 512
+
+        i = 0
+        for r, g, b, w in fixtures:
+            set_rgbw_fixture(dmx, start_channels[i], r, g, b, w)
+            i += 1
+
+        send_dmx_universe(dmx)
+        time.sleep(delay)
+
+        first = fixtures[0]
+        rest = fixtures[1:]
+        fixtures = rest + [first]
+
 def main():
     while True:
         user_prompt = input("Enter colour command: ")
@@ -288,12 +304,14 @@ def main():
         dmx = [0] * 512
         start_channels = [1, 5, 9, 13]
 
+        colour_chase_flash(fixtures, start_channels, 0.3)
+
         i = 0
         for r, g, b, w in fixtures:
             set_rgbw_fixture(dmx, start_channels[i], r, g, b, w)
             i += 1
 
-        colour_strobe(dmx, 0.1)
+        #colour_strobe(dmx, 0.1)
         #colour_static(dmx)
 
 if __name__ == "__main__":
