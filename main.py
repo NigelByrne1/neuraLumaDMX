@@ -11,6 +11,7 @@ llm_port = "8033"
 llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 
 fixture_start_channels = [1, 5, 9, 13]
+mode = "chase"
 
 llm_system_prompt1 = """
 You are a lighting designer.
@@ -275,7 +276,7 @@ def colour_strobe(fixtures, delay):
         blackout()
         time.sleep(delay)
 
-def colour_chase_flash(fixtures, delay):
+def colour_chase(fixtures, delay):
     print("Chase running. Press any key to stop.")
 
     while True:     
@@ -289,6 +290,18 @@ def colour_chase_flash(fixtures, delay):
         first = fixtures[0]
         rest = fixtures[1:]
         fixtures = rest + [first]
+
+def mode_choice(mode, fixtures):
+    if mode == "static":
+        colour_static(fixtures)
+    elif mode == "strobe":
+        colour_strobe(fixtures, 0.1)
+    elif mode == "chase":
+        colour_chase(fixtures, 0.3)
+    else:
+        print("Invalid mode, using static")
+        colour_static(fixtures)
+    
 
 def main():
     while True:
@@ -316,10 +329,8 @@ def main():
         fixtures = parse_json_output(json_reply)
 
         # print(fixtures)
-
-        colour_chase_flash(fixtures, 0.3)
-        #colour_strobe(fixtures, 0.1)
-        #colour_static(fixtures)
+        mode_choice(mode, fixtures)
+        
 
 if __name__ == "__main__":
     print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
