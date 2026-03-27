@@ -10,6 +10,8 @@ interface_baudrate = 57600
 llm_port = "8033"
 llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 
+fixture_start_channels = [1, 5, 9, 13]
+
 llm_system_prompt1 = """
 You are a lighting designer.
 
@@ -223,6 +225,16 @@ def set_rgbw_fixture(dmx, start_channel, r, g, b, w):
     dmx[start_channel + 1] = b
     dmx[start_channel + 2] = w
 
+def build_dmx_from_fixtures(fixtures):
+    dmx = [0] * 512
+
+    i = 0
+    for r, g, b, w in fixtures:
+        set_rgbw_fixture(dmx, fixture_start_channels[i], r, g, b, w)
+        i += 1
+
+    return dmx
+
 def blackout():
     dmx = [0] * 512
 
@@ -235,10 +247,12 @@ def blackout():
     except serial.SerialTimeoutException as e:
         print ("Error: could not send blackout:", e)
 
-def colour_static(dmx):
+def colour_static(fixtures):
+    dmx = build_dmx_from_fixtures
     send_dmx_universe(dmx)
 
-def colour_strobe(dmx, delay):
+def colour_strobe(fixtures, delay):
+    dmx = build_dmx_from_fixtures
     print("Strobe running. Press any key to stop.")
 
     while True:
@@ -258,15 +272,9 @@ def colour_strobe(dmx, delay):
         blackout()
         time.sleep(delay)
 
-def colour_chase_flash(fixtures, start_channels, delay):
+def colour_chase_flash(fixtures, delay):
     while True:
-        dmx = [0] * 512
-
-        i = 0
-        for r, g, b, w in fixtures:
-            set_rgbw_fixture(dmx, start_channels[i], r, g, b, w)
-            i += 1
-
+        dmx = build_dmx_from_fixtures
         send_dmx_universe(dmx)
         time.sleep(delay)
 
@@ -301,16 +309,7 @@ def main():
 
         print(fixtures)
 
-        dmx = [0] * 512
-        start_channels = [1, 5, 9, 13]
-
-        colour_chase_flash(fixtures, start_channels, 0.3)
-
-        i = 0
-        for r, g, b, w in fixtures:
-            set_rgbw_fixture(dmx, start_channels[i], r, g, b, w)
-            i += 1
-
+        colour_chase_flash(fixtures, 0.3)
         #colour_strobe(dmx, 0.1)
         #colour_static(dmx)
 
