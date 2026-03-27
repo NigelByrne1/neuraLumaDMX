@@ -273,10 +273,19 @@ def colour_strobe(fixtures, delay):
         time.sleep(delay)
 
 def colour_chase_flash(fixtures, delay):
+    print("Chase running. Press any key to stop.")
+
     while True:
         dmx = build_dmx_from_fixtures(fixtures)
+
+        if msvcrt.kbhit():
+                    msvcrt.getch()
+                    blackout()
+                    break
+
         send_dmx_universe(dmx)
         time.sleep(delay)
+
 
         first = fixtures[0]
         rest = fixtures[1:]
