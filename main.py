@@ -248,11 +248,11 @@ def blackout():
         print ("Error: could not send blackout:", e)
 
 def colour_static(fixtures):
-    dmx = build_dmx_from_fixtures
+    dmx = build_dmx_from_fixtures(fixtures)
     send_dmx_universe(dmx)
 
 def colour_strobe(fixtures, delay):
-    dmx = build_dmx_from_fixtures
+    dmx = build_dmx_from_fixtures(fixtures)
     print("Strobe running. Press any key to stop.")
 
     while True:
@@ -274,7 +274,7 @@ def colour_strobe(fixtures, delay):
 
 def colour_chase_flash(fixtures, delay):
     while True:
-        dmx = build_dmx_from_fixtures
+        dmx = build_dmx_from_fixtures(fixtures)
         send_dmx_universe(dmx)
         time.sleep(delay)
 
@@ -310,8 +310,8 @@ def main():
         print(fixtures)
 
         colour_chase_flash(fixtures, 0.3)
-        #colour_strobe(dmx, 0.1)
-        #colour_static(dmx)
+        #colour_strobe(fixtures, 0.1)
+        #colour_static(fixtures)
 
 if __name__ == "__main__":
     print ("~~ neuraLumaDMX - type *exit* to exit ~~" ) 
