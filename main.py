@@ -12,6 +12,7 @@ llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
 
 fixture_start_channels = [1, 5, 9, 13]
 mode = "chase"
+speed = "medium"
 
 llm_system_prompt1 = """
 You are a lighting designer.
@@ -301,7 +302,17 @@ def mode_choice(mode, fixtures, delay):
     else:
         print("Invalid mode, using static")
         colour_static(fixtures, delay)
-    
+
+def speed_to_delay(speed):
+    if speed == "slow":
+        return 0.5
+    elif speed == "medium":
+        return 0.2
+    elif speed == "fast":
+        return 0.05
+    else:
+        print("Invalid speed, using medium")
+        return 0.2
 
 def main():
     while True:
@@ -329,7 +340,8 @@ def main():
         fixtures = parse_json_output(json_reply)
 
         # print(fixtures)
-        mode_choice(mode, fixtures)
+        delay = speed_to_delay(speed)
+        mode_choice(mode, fixtures, delay)
         
 
 if __name__ == "__main__":
