@@ -1,6 +1,3 @@
-# local notes
-notes.txt
-
 # Python cache files
 __pycache__/
 *.py[cod]
