@@ -431,7 +431,7 @@ def main():
         print("Colour reply:", colour_reply)
         
         json_reply = ask_llm_json(colour_reply)
-        # print("JSON reply:", json_reply)
+        # print("JSON reply:", json_reply) # comment or uncomment this line to see the json reply
         if json_reply is None:
             continue
         fixtures = parse_json_output(json_reply)
@@ -446,7 +446,7 @@ def main():
         print("Mode:", mode)
         print("Speed:", speed)
 
-        # print(fixtures)
+        # print(fixtures) # comment or uncomment this line to see the fixtures
         delay = speed_to_delay(speed)
         mode_choice(mode, fixtures, delay)
         
