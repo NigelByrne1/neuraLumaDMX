@@ -2,7 +2,7 @@
 
 AI-driven translation of natural language into real-time DMX lighting control.
 
- PLACEHOLDER FOR LOGO PIC
+![neuraLumaDMX Logo](./images/logo_800x300.png)
 
 ---
 ## Overview
@@ -16,6 +16,8 @@ Instead of manually programming DMX values, users can input commands like:
 > "rave strobe"  
 
 These are interpreted by a local LLM pipeline, converted into structured lighting data, validated, and sent to physical fixtures via a USB-DMX interface.
+
+![Screenshot of APP](./images/screenshot.png)
 
 ---
 ## Features 
@@ -44,8 +46,7 @@ These are interpreted by a local LLM pipeline, converted into structured lightin
 ---
 ## Pipeline 
 
-- place holder text
-- image
+![pipeline diagram](./images/diagram.png)
 
 ---
 ## Tech Stack
