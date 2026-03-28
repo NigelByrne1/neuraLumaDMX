@@ -1,5 +1,9 @@
+# local notes
 notes.txt
 
-# Python
+# Python cache files
 __pycache__/
 *.py[cod]
+
+# Local saved scenes (user data)
+saved_scenes/

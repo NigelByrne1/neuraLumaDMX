@@ -361,7 +361,7 @@ def colour_static(fixtures, delay=None):
 
 def colour_strobe(fixtures, delay):
     dmx = build_dmx_from_fixtures(fixtures)
-    print("Strobe running. Press any key to stop.")
+    # print("Strobe running. Press any key to stop.") #  remove comment out if using main.py
 
     while True:
         if check_for_exit_key():
@@ -377,7 +377,7 @@ def colour_strobe(fixtures, delay):
         time.sleep(delay)
 
 def colour_chase(fixtures, delay):
-    print("Chase running. Press any key to stop.")
+    # print("Chase running. Press any key to stop.") # remove comment out if using main.py
 
     while True:     
         if check_for_exit_key():
