@@ -4,15 +4,12 @@ import serial
 import time
 import requests
 
-interface_port = "COM3"
-interface_baudrate = 57600
- 
-llm_port = "8033"
-llm_url = "http://127.0.0.1:" + llm_port + "/v1/chat/completions"
-
-fixture_start_channels = [1, 5, 9, 13]
-mode = "chase"
-speed = "fast"
+from config import (
+    fixture_start_channels,
+    interface_baudrate,
+    interface_port,
+    llm_url,
+)
 
 llm_system_prompt_colour_names = """
 You are a lighting designer.
@@ -105,14 +102,6 @@ Example output:
 
 llm_system_prompt_mode = """
 You are a lighting mode selector.
-
-Think about how the lighting should feel:
-
-- Calm, peaceful, relaxing → slow, static or gentle movement
-- Energetic, chaotic, party, rave → fast, chase or strobe
-- Rhythmic or alternating themes (e.g. police, flags) → chase
-- Simple or single-colour requests → static
-- Dramatic or intense scenes → faster speeds and dynamic modes
 
 Use your judgement to match the lighting behaviour to the user's intent, not just keywords.
 
